@@ -1,0 +1,13 @@
+include:
+  - path: ./airflow/compose.yml
+  - path: ./clickhouse/compose.yml
+  - path: ./postgres/compose.yml
+
+volumes:
+  postgres-data:
+  clickhouse-data:
+  clickhouse-logs:
+
+networks:
+  bikespark-net:
+    driver: bridge
