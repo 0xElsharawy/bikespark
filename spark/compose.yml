@@ -1,0 +1,29 @@
+services:
+  spark-master:
+    image: apache/spark:3.5.0
+    container_name: spark-master
+    ports:
+      - "7077:7077"
+      - "8082:8080"
+    restart: no
+    networks:
+      - bikespark-net
+    volumes:
+      - ./jobs:/opt/spark/jobs
+      - ./citibike_2014:/opt/spark/citibike_2014
+    command: "/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"
+
+  spark-worker:
+    image: apache/spark:3.5.0
+    container_name: spark-worker
+    ports:
+      - "8081:8081"
+    depends_on:
+      - spark-master
+    restart: no
+    networks:
+      - bikespark-net
+    volumes:
+      - ./jobs:/opt/spark/jobs
+      - ./citibike_2014:/opt/spark/citibike_2014
+    command: "/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
