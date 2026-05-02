@@ -1,0 +1,37 @@
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# -------------------------
+# Environment variables
+# -------------------------
+.env
+.env.*
+**/.env
+
+# -------------------------
+# Spark / Data
+# -------------------------
+spark/citibike_*/
+data/
+datasets/
+*.parquet
+*.csv
+*.json
+
+# -------------------------
+# Logs & temp
+# -------------------------
+*.log
+logs/
+tmp/
+*.tmp
