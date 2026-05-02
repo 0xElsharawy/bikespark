@@ -22,6 +22,7 @@ env/
 # Spark / Data
 # -------------------------
 spark/citibike_*/
+spark/jars/
 data/
 datasets/
 *.parquet
