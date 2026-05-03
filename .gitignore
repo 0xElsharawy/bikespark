@@ -9,7 +9,6 @@ env/
 
 .env
 .env.*
-# **/.env
 
 spark/citibike_*/
 spark/jars/
