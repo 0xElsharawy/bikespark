@@ -73,10 +73,27 @@ with DAG(
 
     spark_job = DockerOperator(
         task_id="spark_job",
-        image="spark:latest",
-        command="spark-submit --master spark://spark-master:7077 --deploy-mode client /opt/spark/jobs/ingest_job.py",
+        image="apache/spark:3.5.0",
+        command="/opt/spark/bin/spark-submit --master spark://spark-master:7077 /opt/spark/jobs/ingestion_job.py",
         network_mode="bikespark_bikespark-net",
-        docker_url="tcp://var/run/docker.sock",
+        mounts=[
+            Mount(
+                source="/home/ahmed/Programming/repos/bikespark/spark/jobs",
+                target="/opt/spark/jobs",
+                type="bind",
+            ),
+            Mount(
+                source="/home/ahmed/Programming/repos/bikespark/spark/jars/clickhouse-jdbc-0.9.4-all.jar",
+                target="/opt/spark/jars/clickhouse-jdbc-0.9.4-all.jar",
+                type="bind",
+            ),
+            Mount(
+                source="/home/ahmed/Programming/repos/bikespark/spark/citibike_2014",
+                target="/opt/spark/citibike_2014",
+                type="bind",
+            ),
+        ],
+        docker_url="tcp://docker-socket-proxy:2375",
         auto_remove="success",
     )
 
@@ -90,4 +107,4 @@ with DAG(
         auto_remove="success",
     )
 
-    create_table  # >> spark_job >> run_dbt
+    create_table >> spark_job  # >> run_dbt
