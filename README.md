@@ -4,19 +4,6 @@
 It downloads historical trip data, ingests it into ClickHouse using Apache Spark, orchestrates the workflow with Apache Airflow,
 transforms raw data into analytics-ready models using dbt, and provides interactive dashboards via Metabase.
 
-## Tech Stack
-
-| Component        | Technology                    | Usage                                                                                    |
-| ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------- |
-| Orchestration    | Apache Airflow                | Defines, schedules, and monitors the ELT pipeline workflows via directed acyclic graphs. |
-| Processing       | Apache Spark 3.5.0            | Reads raw CSV files and bulk-loads them into ClickHouse with distributed computation.    |
-| Transformation   | dbt (with ClickHouse adapter) | Transforms raw data into clean, analytics-ready staging and mart models using SQL.       |
-| Warehouse        | ClickHouse                    | Stores all trip data as a high-performance columnar database optimized for analytics.    |
-| Metadata Store   | PostgreSQL                    | Persists internal metadata for Airflow and Metabase services.                            |
-| BI/Visualization | Metabase                      | Provides a web-based interface for building queries, charts, and dashboards.             |
-| Containerization | Docker Compose                | Packages and runs all services as isolated containers with a single command.             |
-| Task Runner      | Just                          | Provides convenient shortcuts for common Docker Compose operations.                      |
-
 ## Architechture
 
 ```
@@ -42,6 +29,19 @@ CSV Files (Citi Bike 2014)
 │   Metabase    │  ← Visualization & Dashboards
 └───────────────┘
 ```
+
+## Tech Stack
+
+| Component        | Technology                    | Usage                                                                                    |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------- |
+| Orchestration    | Apache Airflow                | Defines, schedules, and monitors the ELT pipeline workflows via directed acyclic graphs. |
+| Processing       | Apache Spark 3.5.0            | Reads raw CSV files and bulk-loads them into ClickHouse with distributed computation.    |
+| Transformation   | dbt (with ClickHouse adapter) | Transforms raw data into clean, analytics-ready staging and mart models using SQL.       |
+| Warehouse        | ClickHouse                    | Stores all trip data as a high-performance columnar database optimized for analytics.    |
+| Metadata Store   | PostgreSQL                    | Persists internal metadata for Airflow and Metabase services.                            |
+| BI/Visualization | Metabase                      | Provides a web-based interface for building queries, charts, and dashboards.             |
+| Containerization | Docker Compose                | Packages and runs all services as isolated containers with a single command.             |
+| Task Runner      | Just                          | Provides convenient shortcuts for common Docker Compose operations.                      |
 
 ## Prerequisites
 
@@ -89,7 +89,7 @@ docker compose up -d
 
 ### 5. Run the ELT Pipeline
 
-Navigate to the Airflow UI (default: `http://localhost:8080`) and log in with username `admin` and the password you can get it from the generated file in the Airflow container:
+Navigate to the Airflow UI (default: `http://localhost:8080`) and log in with username `admin` and the password you can get it from the generated file in the Airflow container.
 
 > [!IMPORTANT]
 > To get the Airflow admin password, you can run:
@@ -236,7 +236,8 @@ just down-all
 just up
 ```
 
-> **Warning:** This removes all persisted data.
+> [!WARNING]
+> This removes all persisted data.
 
 ### Viewing Detailed Logs
 
