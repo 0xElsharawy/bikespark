@@ -1,4 +1,4 @@
-<h1 align="center" style="font-size: 5em;">BikeSpark</h1>
+# BikeSpark
 
 **BikeSpark** is an end-to-end ELT (Extract, Load, Transform) pipeline that processes Citi Bike trip data.
 It downloads historical trip data, ingests it into ClickHouse using Apache Spark, orchestrates the workflow with Apache Airflow,
