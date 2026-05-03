@@ -1,0 +1,15 @@
+services:
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dbt-clickhouse
+    container_name: dbt-clickhouse
+    restart: no
+    networks:
+      - bikespark-net
+    environment:
+      DBT_PROFILES_DIR: /root/.dbt
+    volumes:
+      - ./profiles:/root/.dbt
+    command: ["dbt", "debug"]
