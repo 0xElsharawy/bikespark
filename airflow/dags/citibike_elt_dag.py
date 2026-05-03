@@ -65,7 +65,7 @@ default_args = {"owner": "ahmed", "retries": 3, "retry_delay": timedelta(minutes
 with DAG(
     dag_id="trigger_dag",
     default_args=default_args,
-    description="A DAG to trigger spark job and dbt transformations",
+    description="A DAG to trigger the ELT process for Citibike data",
     start_date=datetime(2020, 10, 10),
     schedule=None,
 ) as dag:
