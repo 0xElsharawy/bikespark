@@ -1,8 +1,9 @@
+import os
+from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.docker.operators.docker import DockerOperator
 from docker.types import Mount
-from datetime import datetime, timedelta
 import requests
 
 
@@ -57,6 +58,8 @@ def create_raw_trips_table():
         raise Exception(f"ClickHouse error: {r.text}")
 
 
+ABSOLUTE_PATH = os.getenv("ABSOLUTE_PATH")
+
 default_args = {"owner": "ahmed", "retries": 3, "retry_delay": timedelta(minutes=1)}
 
 with DAG(
@@ -78,17 +81,17 @@ with DAG(
         network_mode="bikespark_bikespark-net",
         mounts=[
             Mount(
-                source="/home/ahmed/Programming/repos/bikespark/spark/jobs",
+                source=f"{ABSOLUTE_PATH}/spark/jobs",
                 target="/opt/spark/jobs",
                 type="bind",
             ),
             Mount(
-                source="/home/ahmed/Programming/repos/bikespark/spark/jars/clickhouse-jdbc-0.9.4-all.jar",
+                source=f"{ABSOLUTE_PATH}/spark/jars/clickhouse-jdbc-0.9.4-all.jar",
                 target="/opt/spark/jars/clickhouse-jdbc-0.9.4-all.jar",
                 type="bind",
             ),
             Mount(
-                source="/home/ahmed/Programming/repos/bikespark/spark/citibike_2014",
+                source=f"{ABSOLUTE_PATH}/spark/citibike_2014",
                 target="/opt/spark/citibike_2014",
                 type="bind",
             ),
@@ -105,7 +108,7 @@ with DAG(
         network_mode="bikespark_bikespark-net",
         mounts=[
             Mount(
-                source="/home/ahmed/Programming/repos/bikespark/dbt/profiles",
+                source=f"{ABSOLUTE_PATH}/dbt/profiles",
                 target="/root/.dbt",
                 type="bind",
             ),
