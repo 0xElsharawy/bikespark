@@ -17,7 +17,7 @@ select
 
     {{ dbt_utils.generate_surrogate_key([
         'usertype',
-        'birth_year',
+        'coalesce(birth_year, 0)',
         'gender'
     ]) }} as user_id
 

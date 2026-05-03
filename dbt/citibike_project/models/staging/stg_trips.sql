@@ -12,6 +12,6 @@ select
     end_station_longitude as end_longitude,
     bikeid as bike_id,
     usertype,
-    birth_year,
+    coalesce(birth_year, 0) as birth_year,
     gender
 from {{ source('citibike', 'raw_trips') }}
