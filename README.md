@@ -1,6 +1,8 @@
 # BikeSpark
 
-BikeSpark is an end-to-end ELT (Extract, Load, Transform) pipeline that processes Citi Bike trip data. It downloads historical trip data, ingests it into ClickHouse using Apache Spark, orchestrates the workflow with Apache Airflow, transforms raw data into analytics-ready models using dbt, and provides interactive dashboards via Metabase.
+**BikeSpark** is an end-to-end ELT (Extract, Load, Transform) pipeline that processes Citi Bike trip data.
+It downloads historical trip data, ingests it into ClickHouse using Apache Spark, orchestrates the workflow with Apache Airflow,
+transforms raw data into analytics-ready models using dbt, and provides interactive dashboards via Metabase.
 
 ## Tech Stack
 
@@ -15,7 +17,7 @@ BikeSpark is an end-to-end ELT (Extract, Load, Transform) pipeline that processe
 | Containerization | Docker Compose                | Packages and runs all services as isolated containers with a single command.             |
 | Task Runner      | Just                          | Provides convenient shortcuts for common Docker Compose operations.                      |
 
-## Data Pipeline Flow
+## Architechture
 
 ```
 CSV Files (Citi Bike 2014)
@@ -180,4 +182,72 @@ bikespark/
 │       └── metabase-init.sql   # Metabase metadata database
 └── metabase/
     └── compose.yml             # Metabase BI service
+```
+
+## Troubleshooting
+
+### Permission Denied on Airflow
+
+If Airflow fails to start, ensure the `AIRFLOW_UID` is set correctly in `airflow/.env`:
+
+```bash
+echo -e "AIRFLOW_UID=$(id -u)\nABSOLUTE_PATH=$(pwd)" > airflow/.env
+just rebuild
+```
+
+### Port Already in Use
+
+If a service fails to bind, check for conflicting processes:
+
+```bash
+sudo lsof -i :8080  # Replace with the occupied port
+```
+
+Stop the conflicting service or change the port mapping in the corresponding `compose.yml`.
+
+### Spark Job Cannot Connect to ClickHouse
+
+Ensure all services are on the same Docker network and ClickHouse is healthy:
+
+```bash
+just ps
+just logs clickhouse
+```
+
+### dbt Models Fail to Build
+
+Verify that the `raw_trips` table exists in ClickHouse before running dbt. The Airflow DAG creates this table automatically before triggering the Spark and dbt steps.
+
+### Dataset Not Found
+
+If Spark cannot locate CSV files, ensure the download script was executed:
+
+```bash
+./spark/download_citibike.sh
+ls spark/citibike_2014/
+```
+
+### Stale State or Corrupted Volumes
+
+If services behave unexpectedly, perform a clean reset:
+
+```bash
+just down-all
+just up
+```
+
+> **Warning:** This removes all persisted data.
+
+### Viewing Detailed Logs
+
+Debug a specific service by following its logs:
+
+```bash
+just logs spark-master
+```
+
+### Enter shell of a running container
+
+```bash
+just shell airflow
 ```
