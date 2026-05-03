@@ -8,8 +8,10 @@ services:
     restart: no
     networks:
       - bikespark-net
+    depends_on:
+      - clickhouse
     environment:
-      DBT_PROFILES_DIR: /root/.dbt
+      DBT_PROFILES_DIR: "/root/.dbt"
     volumes:
       - ./profiles:/root/.dbt
     command: ["dbt", "debug"]
