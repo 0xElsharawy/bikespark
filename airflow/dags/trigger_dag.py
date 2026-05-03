@@ -100,11 +100,18 @@ with DAG(
     run_dbt = DockerOperator(
         task_id="run_dbt",
         image="dbt-clickhouse:latest",
-        command="run",
-        working_dir="/usr/app/citibike_project",
+        command="dbt run",
+        working_dir="/opt/dbt/citibike_project",
         network_mode="bikespark_bikespark-net",
-        docker_url="tcp://var/run/docker.sock",
+        mounts=[
+            Mount(
+                source="/home/ahmed/Programming/repos/bikespark/dbt/profiles",
+                target="/root/.dbt",
+                type="bind",
+            ),
+        ],
+        docker_url="tcp://docker-socket-proxy:2375",
         auto_remove="success",
     )
 
-    create_table >> spark_job  # >> run_dbt
+    create_table >> spark_job >> run_dbt
