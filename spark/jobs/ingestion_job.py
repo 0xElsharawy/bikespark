@@ -1,15 +1,33 @@
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, input_file_name, current_timestamp
-from pyspark.sql.types import *
 import re
+from pyspark.sql import SparkSession
+from pyspark.sql.types import (
+    StructType,
+    StructField,
+    IntegerType,
+    DoubleType,
+    StringType,
+    TimestampType,
+)
 
 JDBC_URL = "jdbc:clickhouse://clickhouse:8123/default"
+JDBC_DRIVER = "com.clickhouse.jdbc.ClickHouseDriver"
 TABLE_NAME = "raw_trips"
 DATA_DIR = "/opt/spark/citibike_2014"
+JAR_PATH = "/opt/spark/jars/clickhouse-jdbc-0.9.4-all.jar"
+
+JDBC_PARTITIONS = 4
+BATCH_SIZE = 50_000
 
 spark = (
-    SparkSession.builder.appName("citibike-ingestion")
-    .config("spark.jars", "/opt/spark/jars/clickhouse-jdbc-0.9.4-all.jar")
+    SparkSession.builder.appName("citibike-ingestion-optimized")
+    .config("spark.jars", JAR_PATH)
+    .config("spark.cores.max", "4")
+    .config("spark.executor.cores", "2")
+    .config("spark.executor.memory", "2g")
+    .config("spark.sql.adaptive.enabled", "true")
+    .config("spark.sql.adaptive.coalescePartitions.enabled", "true")
+    .config("spark.sql.files.maxPartitionBytes", "134217728")
+    .config("spark.sql.files.openCostInBytes", "134217728")
     .getOrCreate()
 )
 
@@ -18,59 +36,55 @@ schema = StructType(
         StructField("tripduration", IntegerType()),
         StructField("starttime", TimestampType()),
         StructField("stoptime", TimestampType()),
-        StructField("start_station_id", IntegerType()),
-        StructField("end_station_id", IntegerType()),
-        StructField("start_station_name", StringType()),
-        StructField("end_station_name", StringType()),
-        StructField("start_station_latitude", DoubleType()),
-        StructField("start_station_longitude", DoubleType()),
-        StructField("end_station_latitude", DoubleType()),
-        StructField("end_station_longitude", DoubleType()),
+        StructField("start station id", IntegerType()),
+        StructField("start station name", StringType()),
+        StructField("start station latitude", DoubleType()),
+        StructField("start station longitude", DoubleType()),
+        StructField("end station id", IntegerType()),
+        StructField("end station name", StringType()),
+        StructField("end station latitude", DoubleType()),
+        StructField("end station longitude", DoubleType()),
         StructField("bikeid", IntegerType()),
         StructField("usertype", StringType()),
-        StructField("birth_year", IntegerType()),
+        StructField("birth year", IntegerType()),
         StructField("gender", IntegerType()),
     ]
 )
 
-df = spark.read.options(header="True").schema(schema).csv(f"{DATA_DIR}/*/*.csv")
-
 
 def clean(col_name: str) -> str:
-    col_name = col_name.strip().lower()
-    col_name = re.sub(r"[ -]+", "_", col_name)
-    return col_name
+    return re.sub(r"[ -]+", "_", col_name.strip().lower())
 
+
+df = (
+    spark.read.options(
+        header="true",
+        nullValue="\\N",
+        timestampFormat="yyyy-MM-dd HH:mm:ss",
+        mode="PERMISSIVE",
+    )
+    .schema(schema)
+    .csv(f"{DATA_DIR}/*/*.csv")
+)
 
 df = df.toDF(*[clean(c) for c in df.columns])
 
+df = df.repartition(JDBC_PARTITIONS)
 
-# df = (
-#     df.withColumn("tripduration", col("tripduration").cast("int"))
-#     .withColumn("starttime", col("starttime").cast("timestamp"))
-#     .withColumn("stoptime", col("stoptime").cast("timestamp"))
-#     .withColumn("start_station_id", col("start_station_id").cast("int"))
-#     .withColumn("end_station_id", col("end_station_id").cast("int"))
-#     .withColumn("start_station_name", col("start_station_name").cast("string"))
-#     .withColumn("end_station_name", col("end_station_name").cast("string"))
-#     .withColumn("start_station_latitude", col("start_station_latitude").cast("double"))
-#     .withColumn(
-#         "start_station_longitude", col("start_station_longitude").cast("double")
-#     )
-#     .withColumn("end_station_latitude", col("end_station_latitude").cast("double"))
-#     .withColumn("end_station_longitude", col("end_station_longitude").cast("double"))
-#     .withColumn("bikeid", col("bikeid").cast("int"))
-#     .withColumn("usertype", col("usertype").cast("string"))
-#     .withColumn("birth_year", col("birth_year").cast("int"))
-#     .withColumn("gender", col("gender").cast("int"))
-# )
-
-df = df.repartition(8)
-
-df.write.format("jdbc").option("driver", "com.clickhouse.jdbc.ClickHouseDriver").option(
-    "url", "jdbc:clickhouse://clickhouse:8123/default"
-).option("user", "default").option("password", "default").option(
-    "dbtable", "raw_trips"
-).option("batchsize", "10000").option("numPartitions", "8").mode("append").save()
+(
+    df.write.format("jdbc")
+    .option("driver", JDBC_DRIVER)
+    .option("url", JDBC_URL)
+    .option("user", "default")
+    .option("password", "default")
+    .option("dbtable", TABLE_NAME)
+    .option("numPartitions", str(JDBC_PARTITIONS))
+    .option("batchsize", str(BATCH_SIZE))
+    .option("socketTimeout", "300")
+    .option("loginTimeout", "30")
+    .option("async_insert", "1")
+    .mode("append")
+    .save()
+)
 
 spark.stop()
