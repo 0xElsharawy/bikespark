@@ -10,7 +10,7 @@ services:
       - bikespark-net
     volumes:
       - ./jobs:/opt/spark/jobs
-      - ./jars/clickhouse-jdbc-0.6.0-all.jar:/opt/spark/jars/clickhouse-jdbc-0.6.0-all.jar
+      - ./jars/clickhouse-jdbc-0.9.4-all.jar:/opt/spark/jars/clickhouse-jdbc-0.9.4-all.jar
       - ./citibike_2014:/opt/spark/citibike_2014
     command: "/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"
 
