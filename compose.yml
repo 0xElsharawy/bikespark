@@ -2,6 +2,7 @@ include:
   - path: ./airflow/compose.yml
   - path: ./clickhouse/compose.yml
   - path: ./dbt/compose.yml
+  - path: ./metabase/compose.yml
   - path: ./postgres/compose.yml
   - path: ./spark/compose.yml
 
