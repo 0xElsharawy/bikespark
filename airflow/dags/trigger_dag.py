@@ -100,7 +100,7 @@ with DAG(
     run_dbt = DockerOperator(
         task_id="run_dbt",
         image="dbt-clickhouse:latest",
-        command="dbt run",
+        command=["bash", "-c", "dbt deps && dbt run"],
         working_dir="/opt/dbt/citibike_project",
         network_mode="bikespark_bikespark-net",
         mounts=[
@@ -110,6 +110,7 @@ with DAG(
                 type="bind",
             ),
         ],
+        environment={"DBT_PROFILES_DIR": "/root/.dbt"},
         docker_url="tcp://docker-socket-proxy:2375",
         auto_remove="success",
     )
