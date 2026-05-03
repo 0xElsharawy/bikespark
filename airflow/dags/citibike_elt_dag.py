@@ -63,7 +63,7 @@ ABSOLUTE_PATH = os.getenv("ABSOLUTE_PATH")
 default_args = {"owner": "ahmed", "retries": 3, "retry_delay": timedelta(minutes=1)}
 
 with DAG(
-    dag_id="trigger_dag",
+    dag_id="citibike_etl_dag",
     default_args=default_args,
     description="A DAG to trigger the ELT process for Citibike data",
     start_date=datetime(2020, 10, 10),
