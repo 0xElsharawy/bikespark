@@ -45,9 +45,9 @@ CSV Files (Citi Bike 2014)
 
 ## Prerequisites
 
+- **Git**
 - **Docker** & **Docker Compose**
 - **Just** (task runner) — optional, Docker Compose commands can be used directly
-- **`wget`** and **`unzip`** (for downloading the dataset)
 
 ## Getting Started
 
@@ -72,6 +72,7 @@ Run the download script to fetch the 2014 Citi Bike trip data and the ClickHouse
 
 ```bash
 chmod +x spark/download_citibike.sh
+# Ensure you have `wget` and `unzip` installed on your system to run the script successfully.
 ./spark/download_citibike.sh
 ```
 
