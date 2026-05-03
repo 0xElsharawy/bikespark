@@ -29,3 +29,8 @@ clean-targets: # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   citibike_project:
+    staging:
+      +materialized: view
+
+    marts:
+      +materialized: table
