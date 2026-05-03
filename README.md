@@ -32,22 +32,22 @@ CSV Files (Citi Bike 2014)
 
 ## Tech Stack
 
-| Component        | Technology                    | Usage                                                                                    |
-| ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------- |
-| Orchestration    | Apache Airflow                | Defines, schedules, and monitors the ELT pipeline workflows via directed acyclic graphs. |
-| Processing       | Apache Spark 3.5.0            | Reads raw CSV files and bulk-loads them into ClickHouse with distributed computation.    |
-| Transformation   | dbt (with ClickHouse adapter) | Transforms raw data into clean, analytics-ready staging and mart models using SQL.       |
-| Warehouse        | ClickHouse                    | Stores all trip data as a high-performance columnar database optimized for analytics.    |
-| Metadata Store   | PostgreSQL                    | Persists internal metadata for Airflow and Metabase services.                            |
-| BI/Visualization | Metabase                      | Provides a web-based interface for building queries, charts, and dashboards.             |
-| Containerization | Docker Compose                | Packages and runs all services as isolated containers with a single command.             |
-| Task Runner      | Just                          | Provides convenient shortcuts for common Docker Compose operations.                      |
+| Component        | Technology     | Usage                                                                                    |
+| ---------------- | -------------- | ---------------------------------------------------------------------------------------- |
+| Orchestration    | Apache Airflow | Defines, schedules, and monitors the ELT pipeline workflows via directed acyclic graphs. |
+| Processing       | Apache Spark   | Reads raw CSV files and bulk-loads them into ClickHouse with distributed computation.    |
+| Transformation   | dbt            | Transforms raw data into clean, analytics-ready staging and mart models using SQL.       |
+| Warehouse        | ClickHouse     | Stores all trip data as a high-performance columnar database optimized for analytics.    |
+| Metadata Store   | PostgreSQL     | Persists internal metadata for Airflow and Metabase services.                            |
+| BI/Visualization | Metabase       | Provides a web-based interface for building queries, charts, and dashboards.             |
+| Containerization | Docker Compose | Packages and runs all services as isolated containers with a single command.             |
+| Task Runner      | Just           | Provides convenient shortcuts for common Docker Compose operations.                      |
 
 ## Prerequisites
 
 - **Docker** & **Docker Compose**
 - **Just** (task runner) — optional, Docker Compose commands can be used directly
-- **wget** and **unzip** (for downloading the dataset)
+- **`wget`** and **`unzip`** (for downloading the dataset)
 
 ## Getting Started
 
@@ -86,6 +86,9 @@ just up
 docker compose up -d
 ```
 
+> [!NOTE]
+> I will be using `just` for all commands in this README, but you can achieve the same results by looking in `justfile` to see the equivalent commands.
+
 ### 5. Run the ELT Pipeline
 
 Navigate to the Airflow UI (default: `http://localhost:8080`) and log in with username `admin` and the password you can get it from the generated file in the Airflow container.
@@ -102,22 +105,6 @@ Find the `citibike_elt_dag` DAG, and trigger it manually. The pipeline will:
 1. **Create** the `raw_trips` table in ClickHouse
 2. **Ingest** all CSV files into ClickHouse via Spark
 3. **Transform** raw data into staging and mart models via dbt
-
-## Available Commands
-
-| Command                  | Description                         |
-| ------------------------ | ----------------------------------- |
-| `just`                   | List all available commands         |
-| `just up`                | Start all services                  |
-| `just down`              | Stop all services                   |
-| `just down-all`          | Stop services and remove volumes    |
-| `just rebuild`           | Rebuild and restart all services    |
-| `just logs <service>`    | Follow logs for a service           |
-| `just restart <service>` | Restart a specific service          |
-| `just shell <service>`   | Open a shell in a running container |
-| `just ps`                | Show container status               |
-
-All steps are orchestrated by **Apache Airflow** via the `citibike_elt_dag` DAG.
 
 ## dbt Models
 
