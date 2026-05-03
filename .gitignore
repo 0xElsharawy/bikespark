@@ -22,3 +22,5 @@ datasets/
 logs/
 tmp/
 *.tmp
+
+.user.yml
