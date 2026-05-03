@@ -47,7 +47,7 @@ CSV Files (Citi Bike 2014)
 
 - **Git**
 - **Docker** & **Docker Compose**
-- **Just** (task runner) — optional, Docker Compose commands can be used directly
+- **Just** command runner (optional)
 
 ## Getting Started
 
