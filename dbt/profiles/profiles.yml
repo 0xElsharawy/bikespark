@@ -1,4 +1,4 @@
-citibike:
+citibike_project:
   target: dev
   outputs:
     dev:
