@@ -20,8 +20,8 @@ JAR_DIR="jars"
 mkdir -p "$JAR_DIR"
 
 wget -q \
-  "https://github.com/ClickHouse/clickhouse-java/releases/download/v0.6.0/clickhouse-jdbc-0.6.0-all.jar" \
-  -O "${JAR_DIR}/clickhouse-jdbc-0.6.0-all.jar"
+  "https://github.com/ClickHouse/clickhouse-java/releases/download/v0.9.4/clickhouse-jdbc-0.9.4-all.jar" \
+  -O "${JAR_DIR}/clickhouse-jdbc-0.9.4-all.jar"
 
 wget -q "https://s3.amazonaws.com/tripdata/${ZIP_FILE}" -O "$ZIP_FILE"
 
@@ -31,4 +31,4 @@ rm "$ZIP_FILE"
 echo "✅ Done:"
 echo "  Year  → $YEAR"
 echo "  Data  → $OUT_DIR/"
-echo "  JAR   → ${JAR_DIR}/clickhouse-jdbc-0.6.0-all.jar"
+echo "  JAR   → ${JAR_DIR}/clickhouse-jdbc-0.9.4-all.jar"
