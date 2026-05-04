@@ -85,6 +85,16 @@ Find the `citibike_elt_dag` DAG, and trigger it manually. The pipeline will:
 2. **Ingest** all CSV files into ClickHouse via Spark
 3. **Transform** raw data into staging and mart models via dbt
 
+### 6. Explore the Data in Metabase
+
+Create visualizations and dashboards in Metabase (default: `http://localhost:3000`) and connect to clickhouse using the following credentials:
+
+- Host: `clickhouse`
+- Port: `8123`
+- Database: `default`
+- Username: `default`
+- Password: `default`
+
 ## dbt Models
 
 | Model         | Type      | Description                                   |
