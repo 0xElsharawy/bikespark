@@ -6,29 +6,7 @@ transforms raw data into analytics-ready models using dbt, and provides interact
 
 ## Architechture
 
-```
-CSV Files (Citi Bike 2014)
-        │
-        ▼
-┌───────────────┐
-│  Apache Spark │  ← Extract & Load (raw_trips)
-└───────┬───────┘
-        │
-        ▼
-┌───────────────┐
-│  ClickHouse   │  ← Data Warehouse
-└───────┬───────┘
-        │
-        ▼
-┌───────────────┐
-│      dbt      │  ← Transform (staging → marts)
-└───────┬───────┘
-        │
-        ▼
-┌───────────────┐
-│   Metabase    │  ← Visualization & Dashboards
-└───────────────┘
-```
+![Architecture Diagram](assets/pipeline.png)
 
 ## Tech Stack
 
