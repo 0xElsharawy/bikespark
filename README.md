@@ -8,6 +8,15 @@ transforms raw data into analytics-ready models using dbt, and provides interact
 
 ![Architecture Diagram](assets/pipeline.png)
 
+## Pipeline Flow
+
+1. **Download** - Historical Citi Bike trip CSV data and clickhouse JDBC diriver is downloaded to the local machine
+2. **Orchestrate** - Apache Airflow triggers the `citibike_elt_dag` DAG
+3. **Create** - The DAG creates the `raw_trips` table in ClickHouse
+4. **Extract & Load** - Apache Spark reads the CSV files and bulk-loads them into ClickHouse
+5. **Transform** - dbt transforms raw data into staging (`stg_trips`) and mart models (`fact_trips`, `dim_station`, `dim_user`)
+6. **Visualize** - Metabase connects to ClickHouse to build interactive dashboards and visualizations
+
 ## Tech Stack
 
 | Component        | Technology     | Usage                                                                                    |
@@ -128,9 +137,6 @@ bikespark/
 ├── spark/
 │   ├── compose.yml             # Spark master/worker services
 │   ├── download_citibike.sh    # Script to download Citi Bike dataset
-│   ├── jars/
-│   │   └── clickhouse-jdbc-0.9.4-all.jar
-│   ├── citibike_2014/          # Raw CSV data (organized by month)
 │   └── jobs/
 │       └── ingestion_job.py    # Spark job: CSV → ClickHouse
 ├── dbt/
@@ -170,16 +176,6 @@ echo -e "AIRFLOW_UID=$(id -u)\nABSOLUTE_PATH=$(pwd)" > airflow/.env
 just rebuild
 ```
 
-### Port Already in Use
-
-If a service fails to bind, check for conflicting processes:
-
-```bash
-sudo lsof -i :8080  # Replace with the occupied port
-```
-
-Stop the conflicting service or change the port mapping in the corresponding `compose.yml`.
-
 ### Spark Job Cannot Connect to ClickHouse
 
 Ensure all services are on the same Docker network and ClickHouse is healthy:
@@ -202,7 +198,7 @@ If Spark cannot locate CSV files, ensure the download script was executed:
 ls spark/citibike_2014/
 ```
 
-### Stale State or Corrupted Volumes
+### Corrupted Volumes
 
 If services behave unexpectedly, perform a clean reset:
 
