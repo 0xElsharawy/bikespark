@@ -105,7 +105,7 @@ Create visualizations and dashboards in Metabase (default: `http://localhost:300
 - Password: `default`
 
 > [!TIP]
-> Using **Metabot**:
+> Using **Metabot** in Metabase:
 >
 > - In top right corner, click on the circle with 4 squares and select "Admin"
 > - From top bar select "AI"
@@ -138,6 +138,8 @@ Create visualizations and dashboards in Metabase (default: `http://localhost:300
 bikespark/
 ├── compose.yml                 # Main Docker Compose entrypoint
 ├── justfile                    # Just task runner commands
+├── assets/                     # Static assets
+│   └── pipeline.png            # Architecture diagram image
 ├── airflow/
 │   ├── compose.yml             # Airflow service
 │   ├── Dockerfile              # Custom Airflow image
