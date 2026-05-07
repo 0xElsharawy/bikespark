@@ -161,7 +161,7 @@ bikespark/
 │       ├── dbt_project.yml
 │       └── models/
 │           ├── staging/
-│           │   └── srg_trips.sql   # Staging: clean & rename columns
+│           │   └── stg_trips.sql   # Staging: clean & rename columns
 │           └── marts/
 │               ├── fact_trips.sql  # Fact table: trip facts with surrogate keys
 │               ├── dim_station.sql # Dimension: unique stations
