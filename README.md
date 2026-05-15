@@ -104,16 +104,6 @@ Create visualizations and dashboards in Metabase (default: `http://localhost:300
 - Username: `default`
 - Password: `default`
 
-> [!TIP]
-> Using **Metabot** in Metabase:
->
-> - In top right corner, click on the circle with 4 squares and select "Admin"
-> - From top bar select "AI"
-> - Connect to AI provider
-> - Choose provider "Anthropic" and input your API key
-> - Once connected, you can go to the main page and you will see in the top right corner a new icon with a robot
-> - Click on the new icone and you can ask natural language questions about your data and it will generate the SQL query for you.
-
 ## dbt Models
 
 | Model         | Type      | Description                                   |
